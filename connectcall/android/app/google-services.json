@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "542677479608",
+    "project_id": "connectcall-ceee5",
+    "storage_bucket": "connectcall-ceee5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:542677479608:android:3b72a18f66cb32aa33844d",
+        "android_client_info": {
+          "package_name": "com.example.connectcall"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcHQD7VeztiowevsrczlEZwDgNR8aQoh8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

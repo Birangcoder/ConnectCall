@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-/// Represents a registered app user, stored in Firestore under `users/{uid}`.
 class UserModel {
   final String id;
   final String name;
   final String email;
   final String? photoUrl;
-  final bool isOnline;
   final DateTime? lastSeen;
   final String? fcmToken;
 
@@ -15,20 +13,33 @@ class UserModel {
     required this.name,
     required this.email,
     this.photoUrl,
-    this.isOnline = false,
     this.lastSeen,
     this.fcmToken,
   });
 
-  factory UserModel.fromMap(String id, Map<String, dynamic> map) {
+  factory UserModel.fromMap(
+      String id,
+      Map<String, dynamic> map,
+      ) {
+    DateTime? lastSeen;
+
+    final value = map['lastSeen'];
+
+    if (value is Timestamp) {
+      lastSeen = value.toDate();
+    } else if (value is DateTime) {
+      lastSeen = value;
+    } else if (value is int) {
+      lastSeen = DateTime.fromMillisecondsSinceEpoch(value);
+    }
+
     return UserModel(
       id: id,
-      name: map['name'] as String? ?? 'Unknown',
-      email: map['email'] as String? ?? '',
-      photoUrl: map['photoUrl'] as String?,
-      isOnline: map['isOnline'] as bool? ?? false,
-      lastSeen: (map['lastSeen'] as Timestamp?)?.toDate(),
-      fcmToken: map['fcmToken'] as String?,
+      name: map['name']?.toString() ?? '',
+      email: map['email']?.toString() ?? '',
+      photoUrl: map['photoUrl']?.toString(),
+      lastSeen: lastSeen,
+      fcmToken: map['fcmToken']?.toString(),
     );
   }
 
@@ -37,25 +48,24 @@ class UserModel {
       'name': name,
       'email': email,
       'photoUrl': photoUrl,
-      'isOnline': isOnline,
-      'lastSeen': lastSeen != null ? Timestamp.fromDate(lastSeen!) : null,
+      'lastSeen': lastSeen,
       'fcmToken': fcmToken,
     };
   }
 
   UserModel copyWith({
+    String? id,
     String? name,
+    String? email,
     String? photoUrl,
-    bool? isOnline,
     DateTime? lastSeen,
     String? fcmToken,
   }) {
     return UserModel(
-      id: id,
+      id: id ?? this.id,
       name: name ?? this.name,
-      email: email,
+      email: email ?? this.email,
       photoUrl: photoUrl ?? this.photoUrl,
-      isOnline: isOnline ?? this.isOnline,
       lastSeen: lastSeen ?? this.lastSeen,
       fcmToken: fcmToken ?? this.fcmToken,
     );

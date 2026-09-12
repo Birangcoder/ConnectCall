@@ -71,7 +71,7 @@ class CallModel {
       calleePhotoUrl: map['calleePhotoUrl'] as String?,
       type: callTypeFromString(map['type'] as String? ?? 'audio'),
       status: callStatusFromString(map['status'] as String? ?? 'ended'),
-      createdAt: (map['createdAt'] as Timestamp).toDate(),
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
       connectedAt: (map['connectedAt'] as Timestamp?)?.toDate(),
       endedAt: (map['endedAt'] as Timestamp?)?.toDate(),
     );

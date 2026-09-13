@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../models/update_info.dart';
 import '../services/update_service.dart';
 
-
 Future<void> showUpdateDialog(
   BuildContext context,
   UpdateInfo updateInfo,
@@ -91,6 +90,10 @@ Future<void> showUpdateDialog(
                                 });
                               },
                             );
+
+                            if (context.mounted) {
+                              Navigator.of(context).pop();
+                            }
                           } catch (e) {
                             setState(() {
                               downloading = false;

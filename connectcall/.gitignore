@@ -49,3 +49,7 @@ app.*.map.json
 
 #file
 /lib/firebase_options.dart
+
+android/key.properties
+*.jks
+*.keystore

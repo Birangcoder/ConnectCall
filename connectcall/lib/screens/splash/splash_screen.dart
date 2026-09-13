@@ -1,11 +1,26 @@
 import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
+import '../../providers/update_checker.dart';
 
 /// Shown briefly on app launch while Firebase initializes and the
 /// router determines whether to send the user to Login or Home.
-class SplashScreen extends StatelessWidget {
+class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      UpdateChecker.check(context);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,9 @@
 {
-  "latestVersion": "1.0.0",
+  "latestVersion": "1.1.0",
   "minimumVersion": "1.0.0",
   "apkUrl": "https://github.com/Birangcoder/ConnectCall/releases/download/v1.0.0/connectcall-v1.0.0.apk",
   "releaseNotes": [
-    "Initial release"
+    "Test update",
+    "Testing update system"
   ]
 }

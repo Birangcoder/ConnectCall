@@ -12,7 +12,7 @@ import '../models/update_info.dart';
 
 class UpdateService {
   static const String versionUrl =
-      'https://raw.githubusercontent.com/Birangcoder/ConnectCall/main/version.json';
+      'https://raw.githubusercontent.com/Birangcoder/ConnectCall/connectcall/version.json';
 
   Future<UpdateInfo?> checkForUpdate() async {
     try {

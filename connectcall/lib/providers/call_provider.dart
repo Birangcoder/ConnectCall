@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/helper/permission_helper.dart';
@@ -8,8 +9,7 @@ final callingServiceProvider = Provider<CallingService>((ref) {
   return CallingService.instance;
 });
 
-final callControllerProvider =
-NotifierProvider<CallController, CallUiState>(
+final callControllerProvider = NotifierProvider<CallController, CallUiState>(
   CallController.new,
 );
 
@@ -17,10 +17,7 @@ class CallUiState {
   final bool isLoading;
   final String? error;
 
-  const CallUiState({
-    this.isLoading = false,
-    this.error,
-  });
+  const CallUiState({this.isLoading = false, this.error});
 
   CallUiState copyWith({
     bool? isLoading,
@@ -35,8 +32,7 @@ class CallUiState {
 }
 
 class CallController extends Notifier<CallUiState> {
-  CallingService get _callingService =>
-      ref.read(callingServiceProvider);
+  CallingService get _callingService => ref.read(callingServiceProvider);
 
   @override
   CallUiState build() {
@@ -51,19 +47,16 @@ class CallController extends Notifier<CallUiState> {
     required String receiverId,
     required String receiverName,
     required bool isVideoCall,
+    required BuildContext context,
   }) async {
-    state = state.copyWith(
-      isLoading: true,
-      clearError: true,
-    );
+    state = state.copyWith(isLoading: true, clearError: true);
 
     try {
       // ---------------------------------------------------------------
       // REQUEST PERMISSIONS
       // ---------------------------------------------------------------
 
-      final permissionsGranted =
-      isVideoCall
+      final permissionsGranted = isVideoCall
           ? await PermissionHelper.requestForVideoCall()
           : await PermissionHelper.requestForAudioCall();
 
@@ -95,8 +88,8 @@ class CallController extends Notifier<CallUiState> {
       // SEND ZEGOCLOUD INVITATION
       // ---------------------------------------------------------------
 
-      final success =
-      await _callingService.callUser(
+      final success = await _callingService.callUser(
+        context: context,
         receiverId: receiverId,
         receiverName: receiverName,
         isVideoCall: isVideoCall,
@@ -111,10 +104,7 @@ class CallController extends Notifier<CallUiState> {
         return false;
       }
 
-      state = state.copyWith(
-        isLoading: false,
-        clearError: true,
-      );
+      state = state.copyWith(isLoading: false, clearError: true);
 
       return true;
     } catch (e) {
@@ -128,8 +118,6 @@ class CallController extends Notifier<CallUiState> {
   }
 
   void clearError() {
-    state = state.copyWith(
-      clearError: true,
-    );
+    state = state.copyWith(clearError: true);
   }
 }

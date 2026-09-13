@@ -4,7 +4,6 @@ import '../../core/constants/app_colors.dart';
 import '../../core/utils/date_formatter.dart';
 import '../../models/call_history_model.dart';
 import '../../providers/call_history_provider.dart';
-import '../../providers/user_provider.dart';
 import '../../widgets/app_avatar.dart';
 
 class CallHistoryScreen extends ConsumerWidget {

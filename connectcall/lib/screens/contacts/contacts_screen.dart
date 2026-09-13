@@ -77,6 +77,7 @@ class _ContactsScreenState
     final success = await ref
         .read(callControllerProvider.notifier)
         .startCall(
+      context: context,
       receiverId: user.id,
       receiverName: user.name,
       isVideoCall: isVideoCall,

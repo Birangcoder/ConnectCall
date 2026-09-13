@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
-
+import 'package:zego_uikit/zego_uikit.dart';
 import '../core/config/app_config.dart';
 import '../models/call_model.dart';
 import '../models/user_model.dart';
@@ -77,9 +77,11 @@ class CallingService {
       requireConfig: (ZegoCallInvitationData data) {
         if (data.type == ZegoCallInvitationType.videoCall) {
           final config = ZegoUIKitPrebuiltCallConfig.oneOnOneVideoCall();
-
+          config.layout = ZegoLayout.pictureInPicture(
+            isSmallViewDraggable: true,
+            switchLargeOrSmallViewByClick: true,
+          );
           config.turnOnCameraWhenJoining = true;
-
           config.bottomMenuBarConfig.buttons = [
             ZegoMenuBarButtonName.toggleMicrophoneButton,
             ZegoMenuBarButtonName.toggleCameraButton,
@@ -87,22 +89,22 @@ class CallingService {
             ZegoMenuBarButtonName.switchCameraButton,
             ZegoMenuBarButtonName.switchAudioOutputButton,
           ];
-
-          print('VIDEO CONFIG: ${config.toString()}');
-
           return config;
         }
 
         final config = ZegoUIKitPrebuiltCallConfig.oneOnOneVoiceCall();
+
+        // Remove the PiP-style floating avatar box for a classic audio-call look
+        config.layout = ZegoLayout.pictureInPicture(smallViewSize: Size.zero);
+        config.turnOnCameraWhenJoining = false;
+        config.useSpeakerWhenJoining = false;
+        config.audioVideoViewConfig.showSoundWavesInAudioMode = false;
 
         config.bottomMenuBarConfig.buttons = [
           ZegoMenuBarButtonName.toggleMicrophoneButton,
           ZegoMenuBarButtonName.hangUpButton,
           ZegoMenuBarButtonName.switchAudioOutputButton,
         ];
-
-        print('AUDIO CONFIG: ${config.toString()}');
-
         return config;
       },
 

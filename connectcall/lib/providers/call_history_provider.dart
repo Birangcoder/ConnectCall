@@ -14,29 +14,18 @@ final callHistoryProvider = StreamProvider<List<CallHistoryEntry>>((ref) {
 
   return FirebaseFirestore.instance
       .collection('calls')
-      .where(
-    'participants',
-    arrayContains: user.uid,
-  )
+      .where('participants', arrayContains: user.uid)
       .snapshots()
       .map((snapshot) {
-    final entries = snapshot.docs.map((doc) {
-      final call = CallModel.fromMap(
-        doc.id,
-        doc.data(),
-      );
+        final entries = snapshot.docs.map((doc) {
+          final call = CallModel.fromMap(doc.id, doc.data());
 
-      return CallHistoryEntry.fromCall(
-        call,
-        currentUserId: user.uid,
-      );
-    }).toList();
+          return CallHistoryEntry.fromCall(call, currentUserId: user.uid);
+        }).toList();
 
-    // Newest call first.
-    entries.sort(
-          (a, b) => b.timestamp.compareTo(a.timestamp),
-    );
+        // Newest call first.
+        entries.sort((a, b) => b.timestamp.compareTo(a.timestamp));
 
-    return entries;
-  });
+        return entries;
+      });
 });

@@ -11,8 +11,7 @@ import 'auth_provider.dart';
 // USER SERVICE
 // -----------------------------------------------------------------------------
 
-final userServiceProvider =
-Provider<UserService>((ref) {
+final userServiceProvider = Provider<UserService>((ref) {
   return UserService();
 });
 
@@ -20,8 +19,7 @@ Provider<UserService>((ref) {
 // SEARCH QUERY
 // -----------------------------------------------------------------------------
 
-final searchQueryProvider =
-StateProvider<String>((ref) {
+final searchQueryProvider = StateProvider<String>((ref) {
   return '';
 });
 
@@ -29,13 +27,10 @@ StateProvider<String>((ref) {
 // CURRENT USER PROFILE
 // -----------------------------------------------------------------------------
 
-final userProfileProvider =
-StreamProvider<UserModel?>((ref) {
-  final authState =
-  ref.watch(authStateProvider);
+final userProfileProvider = StreamProvider<UserModel?>((ref) {
+  final authState = ref.watch(authStateProvider);
 
-  final firebaseUser =
-      authState.asData?.value;
+  final firebaseUser = authState.asData?.value;
 
   if (firebaseUser == null) {
     return Stream.value(null);
@@ -46,75 +41,66 @@ StreamProvider<UserModel?>((ref) {
       .doc(firebaseUser.uid)
       .snapshots()
       .map((snapshot) {
-    if (!snapshot.exists ||
-        snapshot.data() == null) {
-      return null;
-    }
+        if (!snapshot.exists || snapshot.data() == null) {
+          return null;
+        }
 
-    return UserModel.fromMap(
-      snapshot.id,
-      snapshot.data()!,
-    );
-  });
+        return UserModel.fromMap(snapshot.id, snapshot.data()!);
+      });
 });
 
 // -----------------------------------------------------------------------------
 // ALL USERS
 // -----------------------------------------------------------------------------
 
-final usersProvider =
-StreamProvider<List<UserModel>>((ref) {
-  return ref
-      .watch(userServiceProvider)
-      .watchUsers();
+final usersProvider = StreamProvider<List<UserModel>>((ref) {
+  final authState = ref.watch(authStateProvider);
+
+  return authState.when(
+    loading: () => Stream.value([]),
+
+    error: (error, stackTrace) {
+      return Stream.error(error, stackTrace);
+    },
+
+    data: (firebaseUser) {
+      if (firebaseUser == null) {
+        return Stream.value([]);
+      }
+
+      return ref.watch(userServiceProvider).watchUsers();
+    },
+  );
 });
 
 // -----------------------------------------------------------------------------
 // LIVE PRESENCE
 // -----------------------------------------------------------------------------
 
-final presenceProvider =
-StreamProvider.autoDispose
-    .family<PresenceState, String>(
-      (ref, uid) {
-    return PresenceService.instance
-        .watchPresence(uid);
-  },
-);
+final presenceProvider = StreamProvider.autoDispose
+    .family<PresenceState, String>((ref, uid) {
+      return PresenceService.instance.watchPresence(uid);
+    });
 
 // -----------------------------------------------------------------------------
 // FILTERED USERS
 // -----------------------------------------------------------------------------
 
-final filteredUsersProvider =
-Provider<AsyncValue<List<UserModel>>>(
-      (ref) {
-    final users =
-    ref.watch(usersProvider);
+final filteredUsersProvider = Provider<AsyncValue<List<UserModel>>>((ref) {
+  final users = ref.watch(usersProvider);
 
-    final query = ref
-        .watch(searchQueryProvider)
-        .trim()
-        .toLowerCase();
+  final query = ref.watch(searchQueryProvider).trim().toLowerCase();
 
-    return users.whenData(
-          (list) {
-        if (query.isEmpty) {
-          return list;
-        }
+  return users.whenData((list) {
+    if (query.isEmpty) {
+      return list;
+    }
 
-        return list
-            .where((user) {
-          return user.name
-              .toLowerCase()
-              .contains(query) ||
-              user.email
-                  .toLowerCase()
-                  .contains(query);
-        }).toList(
-          growable: false,
-        );
-      },
-    );
-  },
-);
+    return list
+        .where((user) {
+          return user.name.toLowerCase().contains(query) ||
+              user.email.toLowerCase().contains(query);
+        })
+        .toList(growable: false);
+  });
+});

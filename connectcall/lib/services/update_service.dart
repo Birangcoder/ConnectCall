@@ -4,8 +4,10 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter_app_installer/flutter_app_installer.dart';
 import 'package:http/http.dart' as http;
+import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../models/update_info.dart';
 
@@ -40,7 +42,7 @@ class UpdateService {
 
       print(
         'Latest version: '
-        '${updateInfo.latestVersion}',
+            '${updateInfo.latestVersion}',
       );
 
       if (_compareVersions(updateInfo.latestVersion, currentVersion) > 0) {
@@ -91,10 +93,20 @@ class UpdateService {
     return 0;
   }
 
-  Future<void> downloadAndInstall(
-    String apkUrl, {
+  Future<void> downloadAndInstall(String apkUrl, {
     required Function(double progress) onProgress,
   }) async {
+    // -------------------------------------------------------------------
+    // CHECK / REQUEST "INSTALL UNKNOWN APPS" PERMISSION FIRST
+    // -------------------------------------------------------------------
+    final hasPermission = await _ensureInstallPermission();
+
+    if (!hasPermission) {
+      throw Exception(
+        'Please allow "Install unknown apps" for ConnectCall in Settings, then try again.',
+      );
+    }
+
     final directory = await getExternalStorageDirectory();
 
     if (directory == null) {
@@ -103,9 +115,6 @@ class UpdateService {
 
     final apkPath = '${directory.path}/connectcall-update.apk';
 
-    print('APK URL: $apkUrl');
-    print('APK path: $apkPath');
-
     final dio = Dio();
 
     await dio.download(
@@ -113,14 +122,7 @@ class UpdateService {
       apkPath,
       onReceiveProgress: (received, total) {
         if (total > 0) {
-          final progress = received / total;
-
-          print(
-            'Download: '
-            '${(progress * 100).toStringAsFixed(0)}%',
-          );
-
-          onProgress(progress);
+          onProgress(received / total);
         }
       },
     );
@@ -133,18 +135,35 @@ class UpdateService {
 
     final size = await file.length();
 
-    print('APK downloaded successfully');
-
-    print('APK size: $size bytes');
-
     if (size <= 0) {
       throw Exception('Downloaded APK is empty');
     }
 
-    print('Opening Android installer...');
+    final result = await OpenFile.open(
+      apkPath,
+      type: 'application/vnd.android.package-archive',
+    );
 
-    await _installer.installApk(filePath: apkPath);
+    print('APK open result:');
+    print('type: ${result.type}');
+    print('message: ${result.message}');
 
-    print('Android installer opened');
+    // -------------------------------------------------------------------
+    // TURN A FAILED OPEN INTO A VISIBLE ERROR INSTEAD OF SILENT HANG
+    // -------------------------------------------------------------------
+    if (result.type != ResultType.done) {
+      throw Exception('Could not open APK: ${result.type} - ${result.message}');
+    }
+  }
+
+// -------------------------------------------------------------------
+// PERMISSION HELPER
+// -------------------------------------------------------------------
+  Future<bool> _ensureInstallPermission() async {
+    final status = await Permission.requestInstallPackages.status;
+    if (status.isGranted) return true;
+
+    final result = await Permission.requestInstallPackages.request();
+    return result.isGranted;
   }
 }

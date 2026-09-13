@@ -786,6 +786,62 @@
             </list>
           </value>
         </entry>
+        <entry key="open_file">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file-3.5.11/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_android">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_android-1.1.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_ios">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_ios-1.1.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_linux">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_linux-0.0.5/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_mac">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_mac-1.1.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_platform_interface">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_platform_interface-1.1.0/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_web">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_web-0.0.4/lib" />
+            </list>
+          </value>
+        </entry>
+        <entry key="open_file_windows">
+          <value>
+            <list>
+              <option value="$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_windows-0.0.3/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="package_config">
           <value>
             <list>
@@ -1486,6 +1542,14 @@
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/nm-0.5.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/objective_c-9.5.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/octo_image-2.1.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file-3.5.11/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_android-1.1.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_ios-1.1.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_linux-0.0.5/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_mac-1.1.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_platform_interface-1.1.0/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_web-0.0.4/lib" />
+      <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/open_file_windows-0.0.3/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/package_config-3.0.0/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus-8.3.1/lib" />
       <root url="file://$USER_HOME$/AppData/Local/Pub/Cache/hosted/pub.dev/package_info_plus_platform_interface-3.2.1/lib" />

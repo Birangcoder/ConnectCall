@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/connectcall/connectcall.iml" filepath="$PROJECT_DIR$/connectcall/connectcall.iml" />
-      <module fileurl="file://$PROJECT_DIR$/connectcall/android/connectcall_android.iml" filepath="$PROJECT_DIR$/connectcall/android/connectcall_android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/connectcall.iml" filepath="$PROJECT_DIR$/connectcall.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/connectcall_android.iml" filepath="$PROJECT_DIR$/android/connectcall_android.iml" />
     </modules>
   </component>
 </project>

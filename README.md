@@ -15,6 +15,8 @@ ConnectCall is a Flutter-based 1-to-1 calling application. It provides user auth
 - Enable/disable camera
 - Switch front/rear camera
 - End calls
+- Block user
+- UnBlock user
 - Call history
 - Camera and microphone permission handling
 - Loading, error, and empty states

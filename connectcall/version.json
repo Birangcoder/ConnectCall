@@ -1,0 +1,11 @@
+{
+  "latestVersion": "1.2.1",
+  "minimumVersion": "1.2.0",
+  "apkUrl": "https://github.com/Birangcoder/ConnectCall/releases/download/v1.2.1/connectcall-v1.2.1.apk",
+  "releaseNotes": [
+    "Block/UnBlock feature add",
+    "call history ui change",
+    "Bug fixes",
+    "Performance improvements"
+  ]
+}

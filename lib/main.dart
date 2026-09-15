@@ -7,6 +7,7 @@ import 'core/theme/app_theme.dart';
 import 'core/theme/dark_theme.dart';
 import 'firebase_options.dart';
 import 'providers/auth_provider.dart';
+import 'providers/update_checker.dart';
 import 'routes/app_router.dart';
 
 Future<void> main() async {
@@ -19,11 +20,38 @@ Future<void> main() async {
   runApp(const ProviderScope(child: ConnectCallApp()));
 }
 
-class ConnectCallApp extends ConsumerWidget {
+class ConnectCallApp extends ConsumerStatefulWidget {
   const ConnectCallApp({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<ConnectCallApp> createState() => _ConnectCallAppState();
+}
+
+class _ConnectCallAppState extends ConsumerState<ConnectCallApp>
+    with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      UpdateChecker.check(context);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
     // Start presence + ZEGOCLOUD when a Firebase user is available.
     ref.watch(authSessionProvider);
 

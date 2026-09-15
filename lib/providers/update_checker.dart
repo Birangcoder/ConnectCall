@@ -4,7 +4,13 @@ import '../services/update_service.dart';
 import '../widgets/update_dialog.dart';
 
 class UpdateChecker {
+  static bool _checking = false;
+
   static Future<void> check(BuildContext context) async {
+    if (_checking) return;
+
+    _checking = true;
+
     try {
       final service = UpdateService();
 
@@ -27,6 +33,8 @@ class UpdateChecker {
       await showUpdateDialog(context, update, mandatory);
     } catch (e) {
       debugPrint('Update checker error: $e');
+    } finally {
+      _checking = false;
     }
   }
 }

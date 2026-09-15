@@ -336,10 +336,10 @@ class ProfileScreen extends ConsumerWidget {
             return const Center(child: Text('Profile not found'));
           }
 
-          final presence = ref.watch(presenceProvider(user!.id));
+          final presence = ref.watch(presenceProvider(user.id));
           final isOnline = presence.when(
             loading: () => false,
-            error: (_, __) => false,
+            error: (_, _) => false,
             data: (value) => value.isOnline,
           );
 
@@ -423,6 +423,18 @@ class ProfileScreen extends ConsumerWidget {
                       user.name,
                       user.photoUrl,
                     ),
+                  ),
+
+                  const SizedBox(height: AppSizes.xl),
+
+                  ListTile(
+                    leading: const Icon(Icons.block),
+                    title: const Text('Blocked Users'),
+                    subtitle: const Text('Manage users you have blocked'),
+                    trailing: const Icon(Icons.chevron_right),
+                    onTap: () {
+                      context.push('/blocked-users');
+                    },
                   ),
 
                   const SizedBox(height: AppSizes.xl),

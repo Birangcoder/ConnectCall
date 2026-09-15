@@ -26,10 +26,13 @@ class CallHistoryEntry {
   });
 
   bool get isMissed =>
-      status == CallStatus.missed || status == CallStatus.rejected;
+      status == CallStatus.missed;
 
   /// Builds a history entry from the caller or callee's point of view.
-  factory CallHistoryEntry.fromCall(CallModel call, {required String currentUserId}) {
+  factory CallHistoryEntry.fromCall(
+    CallModel call, {
+    required String currentUserId,
+  }) {
     final isOutgoing = call.callerId == currentUserId;
     return CallHistoryEntry(
       callId: call.id,

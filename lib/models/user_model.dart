@@ -17,10 +17,7 @@ class UserModel {
     this.fcmToken,
   });
 
-  factory UserModel.fromMap(
-      String id,
-      Map<String, dynamic> map,
-      ) {
+  factory UserModel.fromMap(String id, Map<String, dynamic> map) {
     DateTime? lastSeen;
 
     final value = map['lastSeen'];

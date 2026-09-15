@@ -67,6 +67,19 @@ class UserService {
     return UserModel.fromMap(doc.id, doc.data()!);
   }
 
+  Future<UserModel?> getUserById(String userId) async {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get();
+
+    if (!snapshot.exists || snapshot.data() == null) {
+      return null;
+    }
+
+    return UserModel.fromMap(snapshot.id, snapshot.data()!);
+  }
+
   // ---------------------------------------------------------------------------
   // UPDATE PROFILE
   // ---------------------------------------------------------------------------

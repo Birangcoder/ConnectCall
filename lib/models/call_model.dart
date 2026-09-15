@@ -1,10 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 /// Whether the call is audio-only or audio + video.
-enum CallType {
-  audio,
-  video,
-}
+enum CallType { audio, video }
 
 /// Lifecycle states of a call.
 enum CallStatus {
@@ -21,14 +18,14 @@ enum CallStatus {
 
 CallType callTypeFromString(String value) {
   return CallType.values.firstWhere(
-        (e) => e.name == value,
+    (e) => e.name == value,
     orElse: () => CallType.audio,
   );
 }
 
 CallStatus callStatusFromString(String value) {
   return CallStatus.values.firstWhere(
-        (e) => e.name == value,
+    (e) => e.name == value,
     orElse: () => CallStatus.ended,
   );
 }
@@ -87,18 +84,14 @@ class CallModel {
   Duration get duration {
     // Prefer the duration explicitly stored in Firestore.
     if (durationSeconds > 0) {
-      return Duration(
-        seconds: durationSeconds,
-      );
+      return Duration(seconds: durationSeconds);
     }
 
     // If the call is currently connected, calculate live duration.
     if (connectedAt != null) {
       final end = endedAt ?? DateTime.now();
 
-      final calculated = end.difference(
-        connectedAt!,
-      );
+      final calculated = end.difference(connectedAt!);
 
       if (calculated.isNegative) {
         return Duration.zero;
@@ -114,10 +107,7 @@ class CallModel {
   // FROM FIRESTORE
   // ---------------------------------------------------------------------------
 
-  factory CallModel.fromMap(
-      String id,
-      Map<String, dynamic> map,
-      ) {
+  factory CallModel.fromMap(String id, Map<String, dynamic> map) {
     return CallModel(
       id: id,
 
@@ -129,26 +119,17 @@ class CallModel {
       calleeName: map['calleeName'] as String? ?? '',
       calleePhotoUrl: map['calleePhotoUrl'] as String?,
 
-      type: callTypeFromString(
-        map['type'] as String? ?? 'audio',
-      ),
+      type: callTypeFromString(map['type'] as String? ?? 'audio'),
 
-      status: callStatusFromString(
-        map['status'] as String? ?? 'ended',
-      ),
+      status: callStatusFromString(map['status'] as String? ?? 'ended'),
 
-      createdAt:
-      (map['createdAt'] as Timestamp?)?.toDate() ??
-          DateTime.now(),
+      createdAt: (map['createdAt'] as Timestamp?)?.toDate() ?? DateTime.now(),
 
-      connectedAt:
-      (map['connectedAt'] as Timestamp?)?.toDate(),
+      connectedAt: (map['connectedAt'] as Timestamp?)?.toDate(),
 
-      endedAt:
-      (map['endedAt'] as Timestamp?)?.toDate(),
+      endedAt: (map['endedAt'] as Timestamp?)?.toDate(),
 
-      durationSeconds:
-      (map['durationSeconds'] as num?)?.toInt() ?? 0,
+      durationSeconds: (map['durationSeconds'] as num?)?.toInt() ?? 0,
     );
   }
 
@@ -167,25 +148,18 @@ class CallModel {
       'calleePhotoUrl': calleePhotoUrl,
 
       // Keep participants in the model too.
-      'participants': [
-        callerId,
-        calleeId,
-      ],
+      'participants': [callerId, calleeId],
 
       'type': type.name,
       'status': status.name,
 
-      'createdAt': Timestamp.fromDate(
-        createdAt,
-      ),
+      'createdAt': Timestamp.fromDate(createdAt),
 
       'connectedAt': connectedAt != null
           ? Timestamp.fromDate(connectedAt!)
           : null,
 
-      'endedAt': endedAt != null
-          ? Timestamp.fromDate(endedAt!)
-          : null,
+      'endedAt': endedAt != null ? Timestamp.fromDate(endedAt!) : null,
 
       'durationSeconds': durationSeconds,
     };

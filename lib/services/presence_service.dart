@@ -12,6 +12,7 @@ class PresenceService {
   final FirebaseDatabase _database = FirebaseDatabase.instance;
 
   StreamSubscription<DatabaseEvent>? _connectionSubscription;
+
   DatabaseReference? _connectionRef;
 
   bool _started = false;
@@ -29,34 +30,47 @@ class PresenceService {
 
     _started = true;
 
+    final uid = user.uid;
+
     final connectedRef = _database.ref('.info/connected');
 
     _connectionSubscription = connectedRef.onValue.listen((event) async {
       final connected = event.snapshot.value == true;
 
+      // Firebase has disconnected.
       if (!connected) {
+        _connectionRef = null;
         return;
       }
 
-      final uid = user.uid;
+      // Already registered a connection for this session.
+      if (_connectionRef != null) {
+        return;
+      }
 
       final connectionsRef = _database.ref('presence/$uid/connections');
 
       final lastSeenRef = _database.ref('presence/$uid/lastSeen');
 
-      // Create a unique connection ID.
+      // Create ONE unique connection.
       final connectionRef = connectionsRef.push();
 
       _connectionRef = connectionRef;
 
-      // IMPORTANT:
-      // Register disconnect handlers BEFORE marking online.
-      await connectionRef.onDisconnect().remove();
+      try {
+        // Register disconnect handlers BEFORE online.
+        await connectionRef.onDisconnect().remove();
 
-      await lastSeenRef.onDisconnect().set(ServerValue.timestamp);
+        await lastSeenRef.onDisconnect().set(ServerValue.timestamp);
 
-      // Mark this connection as active.
-      await connectionRef.set(true);
+        // Mark this connection online.
+        await connectionRef.set(true);
+      } catch (e) {
+        _connectionRef = null;
+
+        // If setup failed, don't leave this connection
+        // as the active local reference.
+      }
     });
   }
 
@@ -71,19 +85,22 @@ class PresenceService {
       return;
     }
 
+    final uid = user.uid;
+
     await _connectionSubscription?.cancel();
 
     _connectionSubscription = null;
 
-    if (_connectionRef != null) {
-      await _connectionRef!.remove();
+    final connectionRef = _connectionRef;
 
-      await _connectionRef!.onDisconnect().cancel();
+    _connectionRef = null;
 
-      _connectionRef = null;
+    if (connectionRef != null) {
+      try {
+        await connectionRef.remove();
+        await connectionRef.onDisconnect().cancel();
+      } catch (_) {}
     }
-
-    final uid = user.uid;
 
     await _database.ref('presence/$uid/lastSeen').set(ServerValue.timestamp);
 
@@ -104,7 +121,8 @@ class PresenceService {
 
       final data = Map<Object?, Object?>.from(value);
 
-      // User is online if at least one connection exists.
+      // User is online only when there is
+      // at least one active connection.
       bool isOnline = false;
 
       final connections = data['connections'];

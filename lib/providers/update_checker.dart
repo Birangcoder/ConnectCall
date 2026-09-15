@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import '../services/update_service.dart';
 import '../widgets/update_dialog.dart';
 
-
 class UpdateChecker {
   static Future<void> check(BuildContext context) async {
     try {

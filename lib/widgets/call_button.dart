@@ -43,7 +43,10 @@ class CallButton extends StatelessWidget {
         ),
         if (label != null) ...[
           const SizedBox(height: 6),
-          Text(label!, style: const TextStyle(fontSize: 12, color: Colors.white)),
+          Text(
+            label!,
+            style: const TextStyle(fontSize: 12, color: Colors.white),
+          ),
         ],
       ],
     );

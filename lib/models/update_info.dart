@@ -16,8 +16,7 @@ class UpdateInfo {
       latestVersion: json['latestVersion'] as String,
       minimumVersion: json['minimumVersion'] as String,
       apkUrl: json['apkUrl'] as String,
-      releaseNotes:
-      List<String>.from(json['releaseNotes'] ?? []),
+      releaseNotes: List<String>.from(json['releaseNotes'] ?? []),
     );
   }
 }

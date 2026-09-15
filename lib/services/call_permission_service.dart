@@ -4,18 +4,16 @@ import 'package:permission_handler/permission_handler.dart';
 class CallPermissionService {
   CallPermissionService._();
 
-  static final CallPermissionService instance =
-  CallPermissionService._();
+  static final CallPermissionService instance = CallPermissionService._();
 
   // ---------------------------------------------------------------------------
   // REQUEST AUDIO CALL PERMISSION
   // ---------------------------------------------------------------------------
 
-  Future<bool> requestAudioPermission(
-      BuildContext context,
-      ) async {
-    final microphoneStatus =
-    await Permission.microphone.request();
+  Future<bool> requestAudioPermission(BuildContext context) async {
+    final microphoneStatus = await Permission.microphone.request();
+
+    if (!context.mounted) return false;
 
     if (microphoneStatus.isGranted) {
       return true;
@@ -26,7 +24,7 @@ class CallPermissionService {
         context,
         title: 'Microphone Permission Required',
         message:
-        'Microphone permission has been denied permanently. '
+            'Microphone permission has been denied permanently. '
             'Please enable it from App Settings to make an audio call.',
       );
 
@@ -36,8 +34,7 @@ class CallPermissionService {
     if (microphoneStatus.isDenied) {
       await _showPermissionDeniedDialog(
         context,
-        message:
-        'Microphone permission is required to make an audio call.',
+        message: 'Microphone permission is required to make an audio call.',
       );
 
       return false;
@@ -50,19 +47,14 @@ class CallPermissionService {
   // REQUEST VIDEO CALL PERMISSION
   // ---------------------------------------------------------------------------
 
-  Future<bool> requestVideoPermission(
-      BuildContext context,
-      ) async {
-    final statuses = await [
-      Permission.microphone,
-      Permission.camera,
-    ].request();
+  Future<bool> requestVideoPermission(BuildContext context) async {
+    final statuses = await [Permission.microphone, Permission.camera].request();
 
-    final microphoneStatus =
-    statuses[Permission.microphone];
+    if (!context.mounted) return false;
 
-    final cameraStatus =
-    statuses[Permission.camera];
+    final microphoneStatus = statuses[Permission.microphone];
+
+    final cameraStatus = statuses[Permission.camera];
 
     if (microphoneStatus?.isGranted == true &&
         cameraStatus?.isGranted == true) {
@@ -75,7 +67,7 @@ class CallPermissionService {
         context,
         title: 'Microphone Permission Required',
         message:
-        'Microphone permission has been denied permanently. '
+            'Microphone permission has been denied permanently. '
             'Please enable it from App Settings.',
       );
 
@@ -88,7 +80,7 @@ class CallPermissionService {
         context,
         title: 'Camera Permission Required',
         message:
-        'Camera permission has been denied permanently. '
+            'Camera permission has been denied permanently. '
             'Please enable it from App Settings.',
       );
 
@@ -98,7 +90,7 @@ class CallPermissionService {
     await _showPermissionDeniedDialog(
       context,
       message:
-      'Camera and microphone permissions are required '
+          'Camera and microphone permissions are required '
           'to make a video call.',
     );
 
@@ -110,10 +102,10 @@ class CallPermissionService {
   // ---------------------------------------------------------------------------
 
   Future<void> _showSettingsDialog(
-      BuildContext context, {
-        required String title,
-        required String message,
-      }) async {
+    BuildContext context, {
+    required String title,
+    required String message,
+  }) async {
     if (!context.mounted) return;
 
     await showDialog<void>(
@@ -148,9 +140,9 @@ class CallPermissionService {
   // ---------------------------------------------------------------------------
 
   Future<void> _showPermissionDeniedDialog(
-      BuildContext context, {
-        required String message,
-      }) async {
+    BuildContext context, {
+    required String message,
+  }) async {
     if (!context.mounted) return;
 
     await showDialog<void>(

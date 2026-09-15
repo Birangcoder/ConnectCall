@@ -36,10 +36,7 @@ class CallHistoryService {
       'calleePhotoUrl': calleePhotoUrl,
 
       // Used to fetch both incoming and outgoing calls.
-      'participants': [
-        callerId,
-        calleeId,
-      ],
+      'participants': [callerId, calleeId],
 
       'type': type.name,
       'status': CallStatus.calling.name,
@@ -118,18 +115,28 @@ class CallHistoryService {
   // MARK ENDED
   // ---------------------------------------------------------------------------
 
-  Future<void> markEnded(
-      String callId, {
-        int durationSeconds = 0,
-      }) async {
+  Future<void> markEnded(String callId, {int durationSeconds = 0}) async {
     try {
+      final doc = await _calls.doc(callId).get();
+
+      if (!doc.exists) return;
+
+      final data = doc.data();
+
+      final status = data?['status'] as String?;
+
+      // Do not turn missed/rejected/busy calls into ended calls.
+      if (status != CallStatus.connected.name) {
+        return;
+      }
+
       await _calls.doc(callId).update({
         'status': CallStatus.ended.name,
         'endedAt': FieldValue.serverTimestamp(),
         'durationSeconds': durationSeconds,
       });
     } catch (_) {
-      // Do not affect calling functionality.
+      // Call history should never break the actual call.
     }
   }
 }

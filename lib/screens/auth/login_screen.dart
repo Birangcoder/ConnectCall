@@ -31,7 +31,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
 
-    final success = await ref.read(authFormControllerProvider.notifier).login(
+    final success = await ref
+        .read(authFormControllerProvider.notifier)
+        .login(
           email: _emailController.text,
           password: _passwordController.text,
         );
@@ -63,7 +65,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       color: AppColors.primary,
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    child: const Icon(Icons.call, color: Colors.white, size: 34),
+                    // child: const Icon(Icons.call, color: Colors.white, size: 34),
+                    child: Image.asset("asset/image/logo.png", width: 34),
                   ),
                 ),
                 const SizedBox(height: AppSizes.md),
@@ -97,9 +100,11 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     labelText: AppStrings.password,
                     prefixIcon: const Icon(Icons.lock_outline),
                     suffixIcon: IconButton(
-                      icon: Icon(_obscurePassword
-                          ? Icons.visibility_outlined
-                          : Icons.visibility_off_outlined),
+                      icon: Icon(
+                        _obscurePassword
+                            ? Icons.visibility_outlined
+                            : Icons.visibility_off_outlined,
+                      ),
                       onPressed: () =>
                           setState(() => _obscurePassword = !_obscurePassword),
                     ),
@@ -111,7 +116,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   const SizedBox(height: AppSizes.md),
                   Text(
                     formState.errorMessage!,
-                    style: const TextStyle(color: AppColors.error, fontSize: 13),
+                    style: const TextStyle(
+                      color: AppColors.error,
+                      fontSize: 13,
+                    ),
                     textAlign: TextAlign.center,
                   ),
                 ],

@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../core/helper/permission_helper.dart';
-import '../models/user_model.dart';
 import '../services/calling_service.dart';
 
 final callingServiceProvider = Provider<CallingService>((ref) {
@@ -81,6 +80,13 @@ class CallController extends Notifier<CallUiState> {
           error: 'Calling service is not initialized.',
         );
 
+        return false;
+      }
+
+      // The async permission request above may have taken time.
+      // Make sure the screen is still mounted before using its context.
+      if (!context.mounted) {
+        state = state.copyWith(isLoading: false);
         return false;
       }
 

@@ -1,8 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:flutter/foundation.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter_app_installer/flutter_app_installer.dart';
 import 'package:http/http.dart' as http;
 import 'package:open_file/open_file.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -15,18 +14,16 @@ class UpdateService {
   static const String versionUrl =
       'https://raw.githubusercontent.com/Birangcoder/ConnectCall/main/version.json';
 
-  final FlutterAppInstaller _installer = FlutterAppInstaller();
-
   Future<UpdateInfo?> checkForUpdate() async {
     try {
-      print('Checking update...');
+      debugPrint('Checking update...');
 
       final response = await http.get(Uri.parse(versionUrl));
 
-      print('Version response: ${response.statusCode}');
+      debugPrint('Version response: ${response.statusCode}');
 
       if (response.statusCode != 200) {
-        print('Version check failed');
+        debugPrint('Version check failed');
         return null;
       }
 
@@ -38,24 +35,24 @@ class UpdateService {
 
       final currentVersion = packageInfo.version;
 
-      print('Current version: $currentVersion');
+      debugPrint('Current version: $currentVersion');
 
-      print(
+      debugPrint(
         'Latest version: '
-            '${updateInfo.latestVersion}',
+        '${updateInfo.latestVersion}',
       );
 
       if (_compareVersions(updateInfo.latestVersion, currentVersion) > 0) {
-        print('Update available');
+        debugPrint('Update available');
 
         return updateInfo;
       }
 
-      print('App is up to date');
+      debugPrint('App is up to date');
 
       return null;
     } catch (e) {
-      print('Update check error: $e');
+      debugPrint('Update check error: $e');
 
       return null;
     }
@@ -93,7 +90,8 @@ class UpdateService {
     return 0;
   }
 
-  Future<void> downloadAndInstall(String apkUrl, {
+  Future<void> downloadAndInstall(
+    String apkUrl, {
     required Function(double progress) onProgress,
   }) async {
     // -------------------------------------------------------------------
@@ -144,9 +142,9 @@ class UpdateService {
       type: 'application/vnd.android.package-archive',
     );
 
-    print('APK open result:');
-    print('type: ${result.type}');
-    print('message: ${result.message}');
+    debugPrint('APK open result:');
+    debugPrint('type: ${result.type}');
+    debugPrint('message: ${result.message}');
 
     // -------------------------------------------------------------------
     // TURN A FAILED OPEN INTO A VISIBLE ERROR INSTEAD OF SILENT HANG
@@ -156,9 +154,9 @@ class UpdateService {
     }
   }
 
-// -------------------------------------------------------------------
-// PERMISSION HELPER
-// -------------------------------------------------------------------
+  // -------------------------------------------------------------------
+  // PERMISSION HELPER
+  // -------------------------------------------------------------------
   Future<bool> _ensureInstallPermission() async {
     final status = await Permission.requestInstallPackages.status;
     if (status.isGranted) return true;

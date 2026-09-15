@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../services/auth_service.dart';
 import '../services/calling_service.dart';
 import '../services/presence_service.dart';
-import '../services/user_service.dart';
 import 'user_provider.dart';
 
 // -----------------------------------------------------------------------------

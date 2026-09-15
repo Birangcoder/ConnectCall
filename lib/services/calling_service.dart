@@ -1,12 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:uuid/uuid.dart';
+import 'package:zego_uikit/zego_uikit.dart';
 import 'package:zego_uikit_prebuilt_call/zego_uikit_prebuilt_call.dart';
 import 'package:zego_uikit_signaling_plugin/zego_uikit_signaling_plugin.dart';
-import 'package:zego_uikit/zego_uikit.dart';
+
 import '../core/config/app_config.dart';
 import '../models/call_model.dart';
 import '../models/user_model.dart';
+import 'block_service.dart';
 import 'call_history_service.dart';
 import 'call_permission_service.dart';
 
@@ -121,10 +123,29 @@ class CallingService {
               List<ZegoCallUser> callees,
               String customData,
             ) async {
-              print('INCOMING CALL');
-              print('Call ID: $callID');
-              print('Caller Zego ID: ${caller.id}');
-              print('Caller name: ${caller.name}');
+              debugPrint('INCOMING CALL');
+              debugPrint('Call ID: $callID');
+              debugPrint('Caller Zego ID: ${caller.id}');
+              debugPrint('Caller name: ${caller.name}');
+
+              try {
+                final isBlocked = await BlockService.instance.isUserBlocked(
+                  caller.id,
+                );
+
+                if (isBlocked) {
+                  await ZegoUIKitPrebuiltCallInvitationService().reject(
+                    customData: 'blocked',
+                  );
+
+                  return;
+                }
+
+                // Your existing incoming-call history
+                // creation code goes here.
+              } catch (e) {
+                debugPrint('Incoming call block check failed: $e');
+              }
 
               // IMPORTANT:
               // Do NOT create another Firestore call here.
@@ -180,9 +201,9 @@ class CallingService {
 
     _initialized = true;
 
-    print('ZEGOCLOUD INITIALIZED');
-    print('Firebase UID: $firebaseUid');
-    print('User name: ${user.name}');
+    debugPrint('ZEGOCLOUD INITIALIZED');
+    debugPrint('Firebase UID: $firebaseUid');
+    debugPrint('User name: ${user.name}');
   }
 
   // ---------------------------------------------------------------------------
@@ -210,14 +231,30 @@ class CallingService {
     // ALWAYS use Firebase Auth UID as caller ID.
     final callerId = firebaseUser.uid;
 
-    print('----------------------------------------');
-    print('STARTING CALL');
-    print('Caller ID: $callerId');
-    print('Caller name: ${_currentUser!.name}');
-    print('Receiver ID: $receiverId');
-    print('Receiver name: $receiverName');
-    print('Video call: $isVideoCall');
-    print('----------------------------------------');
+    debugPrint('----------------------------------------');
+    debugPrint('STARTING CALL');
+    debugPrint('Caller ID: $callerId');
+    debugPrint('Caller name: ${_currentUser!.name}');
+    debugPrint('Receiver ID: $receiverId');
+    debugPrint('Receiver name: $receiverName');
+    debugPrint('Video call: $isVideoCall');
+    debugPrint('----------------------------------------');
+
+    // --------------------------------------------------
+    // CHECK BLOCK FIRST
+    // --------------------------------------------------
+
+    final isBlocked = await BlockService.instance.isUserBlocked(receiverId);
+
+    if (isBlocked) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('You have blocked this user')),
+        );
+      }
+
+      return false;
+    }
 
     // -------------------------------------------------------------------------
     // REQUEST PERMISSION
@@ -260,9 +297,9 @@ class CallingService {
         type: callType,
       );
 
-      print('CALL HISTORY CREATED');
-      print('Firestore callerId: $callerId');
-      print('Firestore calleeId: $receiverId');
+      debugPrint('CALL HISTORY CREATED');
+      debugPrint('Firestore callerId: $callerId');
+      debugPrint('Firestore calleeId: $receiverId');
 
       // -----------------------------------------------------------------------
       // SEND ZEGOCLOUD INVITATION
@@ -276,7 +313,7 @@ class CallingService {
         // SAME ID AS FIRESTORE
         callID: callId,
 
-        timeoutSeconds: 60,
+        timeoutSeconds: 20,
       );
 
       // -----------------------------------------------------------------------
@@ -289,7 +326,7 @@ class CallingService {
 
       return result;
     } catch (e) {
-      print('CALL ERROR: $e');
+      debugPrint('CALL ERROR: $e');
       return false;
     }
   }
